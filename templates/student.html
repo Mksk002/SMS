@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Academic Portal</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        /* Glassmorphism Navbar */
+        .navbar { 
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            color: white; 
+            padding: 18px 40px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .navbar h2 { 
+            font-weight: 600;
+            letter-spacing: 1px;
+            font-size: 22px;
+        }
+        
+        .navbar a { 
+            color: #d4af37; /* Metallic Gold */
+            text-decoration: none; 
+            background: transparent; 
+            border: 2px solid #d4af37;
+            padding: 8px 20px; 
+            border-radius: 25px; 
+            font-weight: bold; 
+            transition: all 0.3s ease;
+        }
+        
+        .navbar a:hover {
+            background: #d4af37;
+            color: #1a1a1a;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+        }
+
+        /* Container Layout */
+        .container { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            padding: 40px 20px; 
+            gap: 40px; 
+        }
+
+        /* Modern Cards */
+        .card { 
+            background: #ffffff; 
+            padding: 40px; 
+            border-radius: 16px; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4); 
+            width: 100%;
+            max-width: 900px; 
+        }
+
+        /* Typography inside cards */
+        h2, h3 { color: #2c3e50; }
+        h3 { margin-bottom: 20px; border-bottom: 2px solid #f0f2f5; padding-bottom: 10px; }
+
+        /* Report Header */
+        .report-header { 
+            text-align: center; 
+            background: #f8fafc;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px; 
+            border: 1px solid #e2e8f0;
+        }
+        
+        .report-header h2 { margin-bottom: 10px; font-size: 26px; }
+        .report-header p { color: #64748b; font-size: 15px; letter-spacing: 0.5px; }
+
+        /* Report Body Grid */
+        .report-body { display: flex; gap: 50px; flex-wrap: wrap; }
+        .col { flex: 1; min-width: 300px; }
+        
+        /* General Details List */
+        .detail-row { 
+            margin-bottom: 15px; 
+            font-size: 15px; 
+            display: flex;
+            align-items: center;
+            color: #475569;
+        }
+        
+        .detail-row b { color: #1e293b; }
+        
+        /* Badges */
+        .grade-highlight { 
+            background: #dcfce7;
+            color: #166534;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 18px; 
+            font-weight: 700; 
+            margin-left: 8px;
+        }
+        
+        .attendance-badge {
+            display: inline-block;
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            margin-top: 15px;
+            border: 1px solid #fca5a5;
+        }
+        
+        /* Modern Progress Bars */
+        .subject { margin-bottom: 20px; }
+        .sub-name { 
+            font-weight: 600; 
+            margin-bottom: 8px; 
+            display: flex; 
+            justify-content: space-between; 
+            color: #334155;
+            font-size: 14px;
+        }
+        
+        .progress-bg { 
+            background: #e2e8f0; 
+            height: 12px; 
+            border-radius: 10px; 
+            overflow: hidden; 
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .progress-fill { 
+            height: 100%; 
+            border-radius: 10px;
+            transition: width 1s ease-in-out;
+        }
+
+        /* Progress Bar Gradients */
+        .bar-blue { background: linear-gradient(90deg, #3498db, #2980b9); }
+        .bar-green { background: linear-gradient(90deg, #2ecc71, #27ae60); }
+        .bar-orange { background: linear-gradient(90deg, #f39c12, #d35400); }
+        .bar-purple { background: linear-gradient(90deg, #9b59b6, #8e44ad); }
+
+        /* Notes Section */
+        .note-item { 
+            background: #f8fafc;
+            border: 1px solid #e2e8f0; 
+            padding: 20px; 
+            margin-bottom: 20px; 
+            border-radius: 12px; 
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .note-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.05);
+        }
+        
+        .note-title { font-weight: bold; font-size: 18px; color: #0f2027; margin-bottom: 5px; }
+        .note-author { font-size: 13px; color: #64748b; margin-bottom: 15px; }
+        .note-content { color: #475569; line-height: 1.6; font-size: 14px; }
+        
+        .download-btn { 
+            display: inline-flex; 
+            align-items: center;
+            background: #2c3e50; 
+            color: white; 
+            padding: 8px 16px; 
+            text-decoration: none; 
+            border-radius: 6px; 
+            font-size: 13px; 
+            font-weight: 600;
+            margin-top: 15px; 
+            transition: background 0.3s;
+        }
+        
+        .download-btn:hover { background: #1a252f; }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center; 
+            color: #94a3b8; 
+            padding: 30px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <h2>Student Portal</h2>
+        <a href="/logout">Logout</a>
+    </div>
+
+    <div class="container">
+        
+        <div class="card">
+            <div class="report-header">
+                <h2>🎓 Student Academic Record</h2>
+                <p><b>{{ student['name'] | upper }}</b> &nbsp;|&nbsp; Roll No: {{ student['uid'] }} &nbsp;|&nbsp; Program: {{ student['course'] }}</p>
+            </div>
+            
+            <div class="report-body">
+                <div class="col">
+                    <h3>General Information</h3>
+                    <div class="detail-row">📧 &nbsp; Email: &nbsp; <b>{{ student['email'] }}</b></div>
+                    <div class="detail-row">📞 &nbsp; Contact: &nbsp; <b>{{ student['contact'] }}</b></div>
+                    <div class="detail-row">📍 &nbsp; Address: &nbsp; <b>{{ student['address'] }}</b></div>
+                    
+                    <h3 style="margin-top: 35px;">Overall Performance</h3>
+                    <div class="detail-row">Total Score: &nbsp; <b>{{ total }} / 400</b></div>
+                    <div class="detail-row">Percentage: &nbsp; <b>{{ "%.1f"|format(pct) }}%</b></div>
+                    <div class="detail-row">Overall Grade: <span class="grade-highlight">{{ grade }}</span></div>
+                    
+                    <div class="attendance-badge">
+                        📊 Attendance Record: {{ student['attendance'] }}%
+                    </div>
+                </div>
+                
+                <div class="col">
+                    <h3>Subject Breakdown</h3>
+                    
+                    <div class="subject">
+                        <div class="sub-name"><span>DSCC1-P1</span> <span>{{ student['m1'] }} / 100</span></div>
+                        <div class="progress-bg"><div class="progress-fill bar-blue" style="width: {{ student['m1'] }}%;"></div></div>
+                    </div>
+                    
+                    <div class="subject">
+                        <div class="sub-name"><span>DSCC1-P2</span> <span>{{ student['m2'] }} / 100</span></div>
+                        <div class="progress-bg"><div class="progress-fill bar-green" style="width: {{ student['m2'] }}%;"></div></div>
+                    </div>
+                    
+                    <div class="subject">
+                        <div class="sub-name"><span>DSCC2-P1</span> <span>{{ student['cs1'] }} / 100</span></div>
+                        <div class="progress-bg"><div class="progress-fill bar-orange" style="width: {{ student['cs1'] }}%;"></div></div>
+                    </div>
+                    
+                    <div class="subject">
+                        <div class="sub-name"><span>DSCC2-P2</span> <span>{{ student['cs2'] }} / 100</span></div>
+                        <div class="progress-bg"><div class="progress-fill bar-purple" style="width: {{ student['cs2'] }}%;"></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 style="margin-bottom: 25px;">📚 Course Materials & Notes</h2>
+            
+            {% if not notes %}
+                <div class="empty-state">No course materials have been uploaded for this term yet.</div>
+            {% else %}
+                {% for n in notes %}
+                <div class="note-item">
+                    <div class="note-title">{{ n['title'] }}</div>
+                    <div class="note-author">Uploaded by Faculty: <b>{{ n['teacher_name'] }}</b></div>
+                    <div class="note-content">{{ n['content'] }}</div>
+                    
+                    {% if n['file_name'] %}
+                        <a href="/download_file/{{ n['id'] }}" class="download-btn">
+                            📁 Download {{ n['file_name'] }}
+                        </a>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        
+    </div>
+
+</body>
+</html>

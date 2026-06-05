@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard - Students</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        /* Glassmorphism Navbar */
+        .navbar { 
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            color: white; 
+            padding: 18px 40px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .navbar h2 { 
+            font-weight: 600;
+            letter-spacing: 1px;
+            font-size: 22px;
+        }
+        
+        .nav-links a { 
+            text-decoration: none; 
+            padding: 8px 20px; 
+            border-radius: 25px; 
+            font-weight: bold; 
+            margin-left: 15px;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        
+        .btn-notes { 
+            background: transparent; 
+            color: #d4af37; 
+            border: 2px solid #d4af37; 
+        }
+        .btn-notes:hover { background: #d4af37; color: #1a1a1a; box-shadow: 0 0 10px rgba(212, 175, 55, 0.4); }
+        
+        .btn-logout { 
+            background: #e74c3c; 
+            color: white; 
+            border: 2px solid #e74c3c; 
+        }
+        .btn-logout:hover { background: #c0392b; border-color: #c0392b; }
+
+        /* Container Layout */
+        .container { 
+            display: flex; 
+            flex-direction: column; 
+            padding: 40px 20px; 
+            gap: 30px; 
+            max-width: 1200px; 
+            margin: 0 auto;
+        }
+
+        /* Modern Cards */
+        .card { 
+            background: #ffffff; 
+            padding: 35px; 
+            border-radius: 16px; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4); 
+        }
+        
+        .card h3 { 
+            color: #2c3e50; 
+            border-bottom: 2px solid #f0f2f5; 
+            padding-bottom: 15px; 
+            margin-top: 0;
+            margin-bottom: 25px;
+            font-size: 22px;
+        }
+
+        /* Form Styling */
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group.full-width { grid-column: span 2; }
+        
+        label { font-weight: 600; color: #555; font-size: 14px; margin-bottom: 6px; }
+        
+        input, select { 
+            padding: 12px; 
+            border: 1px solid #dcdcdc; 
+            border-radius: 6px; 
+            font-size: 15px; 
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        input:focus, select:focus { 
+            outline: none; 
+            border-color: #2980b9; 
+            box-shadow: 0 0 8px rgba(41, 128, 185, 0.2); 
+        }
+        
+        button[type="submit"] { 
+            background: #d4af37; /* Metallic Gold */
+            color: #1a1a1a; 
+            border: none; 
+            padding: 14px; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            font-size: 16px;
+            margin-top: 15px;
+            transition: background 0.3s ease, transform 0.1s ease;
+        }
+        button[type="submit"]:hover { background: #c5a028; transform: translateY(-2px); }
+
+        /* Metrics & Filter Bar */
+        .metrics-bar { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            background: #f8fafc; 
+            color: #334155; 
+            padding: 15px 20px; 
+            border-radius: 8px; 
+            margin-bottom: 20px; 
+            border: 1px solid #e2e8f0;
+        }
+        .metrics-bar select { padding: 8px; font-size: 14px; margin-left: 10px; width: 150px; }
+
+        /* Modern Table Styling */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 15px 12px; text-align: left; font-size: 14px; }
+        
+        th { 
+            background-color: #f1f5f9; 
+            color: #475569; 
+            font-weight: 600; 
+            border-bottom: 2px solid #cbd5e1; 
+        }
+        
+        td { border-bottom: 1px solid #e2e8f0; color: #334155; }
+        tbody tr:hover { background-color: #f8fafc; }
+        
+        /* Action Buttons in Table */
+        .action-btns { display: flex; gap: 8px; }
+        .btn-edit, .btn-delete {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .btn-edit { background: #3498db; }
+        .btn-edit:hover { background: #2980b9; }
+        .btn-delete { background: #e74c3c; }
+        .btn-delete:hover { background: #c0392b; }
+
+        /* Alerts */
+        .flash { 
+            padding: 15px; 
+            margin-bottom: 10px; 
+            border-radius: 6px; 
+            text-align: left; 
+            font-weight: 600; 
+            font-size: 14px;
+        }
+        .success { background: #dcfce7; color: #166534; border-left: 4px solid #166534; }
+        .error { background: #fee2e2; color: #991b1b; border-left: 4px solid #991b1b; }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <h2>Teacher Dashboard - Welcome {{ session['name'] }}</h2>
+        <div class="nav-links">
+            <a href="/teacher/notes" class="btn-notes">📚 Manage Notes</a>
+            <a href="/logout" class="btn-logout">Logout</a>
+        </div>
+    </div>
+
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}{% for category, message in messages %}<div class="flash {{ category }}">{{ message }}</div>{% endfor %}{% endif %}
+        {% endwith %}
+
+        <div class="card">
+            <h3 id="studentFormTitle">Enroll & Grade Student</h3>
+            <form action="/add_student" method="POST" class="form-grid" id="studentForm">
+                <div class="form-group"><label>Roll No:</label><input type="text" name="uid" required placeholder="e.g., 2026CS101"></div>
+                <div class="form-group"><label>Full Name:</label><input type="text" name="name" required placeholder="Student's full name"></div>
+                <div class="form-group"><label>Password:</label><input type="password" name="password" required placeholder="Assign a password"></div>
+                <div class="form-group"><label>Email:</label><input type="email" name="email" required placeholder="student@university.edu"></div>
+                <div class="form-group"><label>Contact:</label><input type="text" name="contact" placeholder="Phone number"></div>
+                <div class="form-group">
+                    <label>Course:</label>
+                    <select name="course">
+                        <option value="BSC">BSC</option>
+                        <option value="BCA">BCA</option>
+                        <option value="BCOM">BCOM</option>
+                        <option value="BBA">BBA</option>
+                        <option value="BA">BA</option>
+                    </select>
+                </div>
+                <div class="form-group full-width"><label>Address:</label><input type="text" name="address" placeholder="Residential address"></div>
+                
+                <div class="form-group"><label>DSCC1-P1 Marks:</label><input type="number" name="m1" value="0"></div>
+                <div class="form-group"><label>DSCC1-P2 Marks:</label><input type="number" name="m2" value="0"></div>
+                <div class="form-group"><label>DSCC2-P1 Marks:</label><input type="number" name="cs1" value="0"></div>
+                <div class="form-group"><label>DSCC2-P2 Marks:</label><input type="number" name="cs2" value="0"></div>
+                <div class="form-group"><label>Attendance %:</label><input type="number" name="attendance" value="0"></div>
+                <div class="form-group"><label>Security Ans:</label><input type="text" name="sec_answer" placeholder="For password recovery"></div>
+                
+                <div class="form-group full-width"><button type="submit" id="studentSubmitBtn">Save Student Record</button></div>
+            </form>
+        </div>
+
+        <div class="card">
+            <h3>Enrolled Students Overview</h3>
+            
+            <div class="metrics-bar">
+                <div>
+                    <label><strong>Filter by Course: </strong></label>
+                    <select id="courseFilter" onchange="filterStudents()">
+                        <option value="ALL">All Courses</option>
+                        <option value="BSC">BSC</option>
+                        <option value="BCA">BCA</option>
+                        <option value="BCOM">BCOM</option>
+                        <option value="BBA">BBA</option>
+                        <option value="BA">BA</option>
+                    </select>
+                </div>
+                <div><strong>Total Showing: </strong> <span id="studentCount" style="color: #2980b9; font-weight: bold; font-size: 18px;">{{ students|length }}</span></div>
+            </div>
+
+            <div style="overflow-x: auto;">
+                <table id="studentTable">
+                    <thead>
+                        <tr>
+                            <th>Roll No</th>
+                            <th>Name</th>
+                            <th>Course</th>
+                            <th>M1</th>
+                            <th>M2</th>
+                            <th>CS1</th>
+                            <th>CS2</th>
+                            <th>Contact</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for s in students %}
+                        <tr>
+                            <td><b>{{ s['uid'] }}</b></td>
+                            <td>{{ s['name'] }}</td>
+                            <td>{{ s['course'] }}</td>
+                            <td>{{ s['m1'] }}</td>
+                            <td>{{ s['m2'] }}</td>
+                            <td>{{ s['cs1'] }}</td>
+                            <td>{{ s['cs2'] }}</td>
+                            <td>{{ s['contact'] }}</td>
+                            <td>
+                                <div class="action-btns">
+                                    <button class="btn-edit" onclick="editStudent('{{ s['uid'] }}', '{{ s['name'] }}', '{{ s['email'] }}', '{{ s['contact'] }}', '{{ s['course'] }}', '{{ s['address'] }}', '{{ s['m1'] }}', '{{ s['m2'] }}', '{{ s['cs1'] }}', '{{ s['cs2'] }}', '{{ s['attendance'] }}')">Edit</button>
+                                    <a href="/delete_student/{{ s['uid'] }}" class="btn-delete" onclick="return confirm('Permanently remove this student? This action cannot be undone.')">Del</a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function editStudent(uid, name, email, contact, course, address, m1, m2, cs1, cs2, attendance) {
+            const form = document.getElementById('studentForm');
+            form.action = "/update_student";
+            document.querySelector('input[name="uid"]').value = uid;
+            document.querySelector('input[name="uid"]').readOnly = true; 
+            document.querySelector('input[name="uid"]').style.backgroundColor = "#f1f5f9";
+            document.querySelector('input[name="name"]').value = name;
+            document.querySelector('input[name="email"]').value = email;
+            document.querySelector('input[name="contact"]').value = contact;
+            document.querySelector('select[name="course"]').value = course;
+            document.querySelector('input[name="address"]').value = address !== 'None' ? address : '';
+            document.querySelector('input[name="m1"]').value = m1 !== 'None' ? m1 : 0;
+            document.querySelector('input[name="m2"]').value = m2 !== 'None' ? m2 : 0;
+            document.querySelector('input[name="cs1"]').value = cs1 !== 'None' ? cs1 : 0;
+            document.querySelector('input[name="cs2"]').value = cs2 !== 'None' ? cs2 : 0;
+            document.querySelector('input[name="attendance"]').value = attendance !== 'None' ? attendance : 0;
+            
+            document.querySelector('input[name="password"]').required = false;
+            document.querySelector('input[name="password"]').placeholder = "(Leave blank to keep current)";
+            
+            document.getElementById('studentSubmitBtn').innerText = "Update Student Record";
+            document.getElementById('studentFormTitle').innerText = "Edit Student Profile";
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function filterStudents() {
+            const filter = document.getElementById("courseFilter").value.toUpperCase();
+            const rows = document.querySelectorAll("#studentTable tbody tr");
+            let count = 0;
+            
+            rows.forEach(row => {
+                const course = row.cells[2].innerText.toUpperCase();
+                if (filter === "ALL" || course === filter) {
+                    row.style.display = "";
+                    count++;
+                } else {
+                    row.style.display = "none";
+                }
+            });
+            document.getElementById("studentCount").innerText = count;
+        }
+    </script>
+</body>
+</html>

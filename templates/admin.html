@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        /* Glassmorphism Navbar */
+        .navbar { 
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            color: white; 
+            padding: 18px 40px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .navbar h2 { 
+            font-weight: 600;
+            letter-spacing: 1px;
+            font-size: 22px;
+        }
+        
+        .navbar a { 
+            text-decoration: none; 
+            background: transparent;
+            color: #e74c3c; 
+            border: 2px solid #e74c3c; 
+            padding: 8px 20px; 
+            border-radius: 25px; 
+            font-weight: bold; 
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        
+        .navbar a:hover { 
+            background: #c0392b; 
+            border-color: #c0392b; 
+            color: white;
+        }
+
+        /* Container Layout */
+        .container { 
+            display: flex; 
+            gap: 30px; 
+            padding: 40px 20px; 
+            max-width: 1400px; 
+            margin: 0 auto;
+            align-items: flex-start;
+            flex-wrap: wrap; /* Responsive wrapping */
+        }
+
+        /* Modern Cards */
+        .form-section { 
+            background: #ffffff; 
+            padding: 35px; 
+            border-radius: 16px; 
+            width: 30%; 
+            min-width: 320px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4); 
+            flex-grow: 1;
+        }
+        
+        .data-section { 
+            background: #ffffff; 
+            padding: 35px; 
+            border-radius: 16px; 
+            width: 65%; 
+            min-width: 500px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4); 
+            flex-grow: 2;
+        }
+
+        h3 { 
+            color: #2c3e50; 
+            border-bottom: 2px solid #f0f2f5; 
+            padding-bottom: 15px; 
+            margin-top: 0;
+            margin-bottom: 25px;
+            font-size: 22px;
+            text-align: center;
+        }
+
+        /* Form Styling */
+        form { display: flex; flex-direction: column; }
+        
+        label { font-weight: 600; color: #555; font-size: 14px; margin-bottom: 6px; margin-top: 15px; }
+        label:first-child { margin-top: 0; }
+        
+        input { 
+            width: 100%; 
+            padding: 12px; 
+            border: 1px solid #dcdcdc; 
+            border-radius: 6px; 
+            font-size: 15px; 
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        input:focus { 
+            outline: none; 
+            border-color: #2980b9; 
+            box-shadow: 0 0 8px rgba(41, 128, 185, 0.2); 
+        }
+        
+        button[type="submit"] { 
+            background: #d4af37; /* Metallic Gold */
+            color: #1a1a1a; 
+            border: none; 
+            padding: 14px; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            font-size: 16px;
+            margin-top: 25px;
+            width: 100%;
+            transition: background 0.3s ease, transform 0.1s ease;
+        }
+        button[type="submit"]:hover { background: #c5a028; transform: translateY(-2px); }
+
+        /* Modern Table Styling */
+        .table-wrapper { overflow-x: auto; margin-bottom: 40px; }
+        
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 15px 12px; text-align: left; font-size: 14px; }
+        
+        th { 
+            background-color: #f1f5f9; 
+            color: #475569; 
+            font-weight: 600; 
+            border-bottom: 2px solid #cbd5e1; 
+        }
+        
+        td { border-bottom: 1px solid #e2e8f0; color: #334155; }
+        tbody tr:hover { background-color: #f8fafc; }
+        
+        /* Action Buttons */
+        .action-btns { display: flex; gap: 8px; }
+        
+        .btn-edit, .btn-delete {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+            transition: background 0.2s;
+            text-align: center;
+        }
+        .btn-edit { background: #3498db; }
+        .btn-edit:hover { background: #2980b9; }
+        .btn-delete { background: #e74c3c; }
+        .btn-delete:hover { background: #c0392b; }
+
+        /* Metrics & Filter Bar */
+        .metrics-bar { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            background: #f8fafc; 
+            color: #334155; 
+            padding: 15px 20px; 
+            border-radius: 8px; 
+            margin-bottom: 20px; 
+            border: 1px solid #e2e8f0;
+        }
+        .metrics-bar select { padding: 8px; font-size: 14px; margin-left: 10px; width: 150px; border-radius: 6px; border: 1px solid #ccc; }
+
+        /* Alerts */
+        .flash { 
+            padding: 15px; 
+            margin-bottom: 20px; 
+            border-radius: 6px; 
+            text-align: left; 
+            font-weight: 600; 
+            font-size: 14px;
+        }
+        .success { background: #dcfce7; color: #166534; border-left: 4px solid #166534; }
+        .error { background: #fee2e2; color: #991b1b; border-left: 4px solid #991b1b; }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <h2>Admin Dashboard - Welcome {{ session['name'] }}</h2>
+        <a href="/logout">Logout</a>
+    </div>
+
+    <div class="container">
+        
+        <div class="form-section">
+            <h3 id="formTitle">👨‍🏫 Add New Teacher</h3>
+            
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            
+            <form action="/add_teacher" method="POST" id="teacherForm">
+                <label>Teacher ID</label>
+                <input type="text" name="uid" required placeholder="e.g., TCH-1001">
+                
+                <label>Full Name</label>
+                <input type="text" name="name" required placeholder="Dr. John Doe">
+                
+                <label>Password</label>
+                <input type="password" name="password" required placeholder="Assign password">
+                
+                <label>Email Address</label>
+                <input type="email" name="email" pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$" required placeholder="teacher@mail.com">
+                
+                <label>Contact Number</label>
+                <input type="text" name="contact" maxlength="10" required placeholder="Phone number">
+                
+                <button type="submit" id="submitBtn">Register Teacher</button>
+            </form>
+        </div>
+
+        <div class="data-section">
+            
+            <h3>📋 Manage Faculty</h3>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Teacher ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Contact</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for t in teachers %}
+                        <tr>
+                            <td><b>{{ t['uid'] }}</b></td>
+                            <td>{{ t['name'] }}</td>
+                            <td>{{ t['email'] }}</td>
+                            <td>{{ t['contact'] }}</td>
+                            <td>
+                                <div class="action-btns">
+                                    <button class="btn-edit" onclick="editTeacher('{{ t['uid'] }}', '{{ t['name'] }}', '{{ t['email'] }}', '{{ t['contact'] }}')">Edit</button>
+                                    <a href="/delete_teacher/{{ t['uid'] }}" class="btn-delete" onclick="return confirm('Remove this teacher? This action cannot be undone.')">Del</a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <h3 style="margin-top: 20px;">🎓 All Enrolled Students</h3>
+            <div class="metrics-bar">
+                <div>
+                    <label><strong>Filter by Course: </strong></label>
+                    <select id="courseFilter" onchange="filterStudents()">
+                        <option value="ALL">All Courses</option>
+                        <option value="BSC">BSC</option>
+                        <option value="BCA">BCA</option>
+                        <option value="BCOM">BCOM</option>
+                        <option value="BBA">BBA</option>
+                        <option value="BA">BA</option>
+                    </select>
+                </div>
+                <div><strong>Total Showing: </strong> <span id="studentCount" style="color: #2980b9; font-weight: bold; font-size: 18px;">{{ students|length }}</span></div>
+            </div>
+
+            <div class="table-wrapper" style="margin-bottom: 0;">
+                <table id="studentTable">
+                    <thead>
+                        <tr>
+                            <th>Roll No</th>
+                            <th>Student Name</th>
+                            <th>Course Enrolled</th>
+                            <th>Contact Info</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for s in students %}
+                        <tr>
+                            <td><b>{{ s['uid'] }}</b></td>
+                            <td>{{ s['name'] }}</td>
+                            <td>
+                                <span style="background: #e0f2fe; color: #0369a1; padding: 3px 8px; border-radius: 12px; font-size: 12px; font-weight: bold;">
+                                    {{ s['course'] }}
+                                </span>
+                            </td>
+                            <td>{{ s['contact'] }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+        </div>
+    </div>
+
+    <script>
+        function editTeacher(uid, name, email, contact) {
+            const form = document.getElementById('teacherForm');
+            form.action = "/update_teacher";
+            
+            // Set values
+            const uidInput = document.querySelector('input[name="uid"]');
+            uidInput.value = uid;
+            uidInput.readOnly = true; 
+            uidInput.style.backgroundColor = "#f1f5f9"; // Visual cue that ID cannot be edited
+            
+            document.querySelector('input[name="name"]').value = name;
+            document.querySelector('input[name="email"]').value = email;
+            document.querySelector('input[name="contact"]').value = contact;
+            
+            const pwdInput = document.querySelector('input[name="password"]');
+            pwdInput.required = false; 
+            pwdInput.placeholder = "(Leave blank to keep current)";
+            
+            // Update UI text
+            document.getElementById('submitBtn').innerText = "Update Teacher Profile";
+            document.getElementById('formTitle').innerText = "✏️ Edit Teacher Details";
+            
+            // Scroll to top smoothly
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Live Student Filtering JavaScript
+        function filterStudents() {
+            const filter = document.getElementById("courseFilter").value.toUpperCase();
+            const rows = document.querySelectorAll("#studentTable tbody tr");
+            let count = 0;
+            
+            rows.forEach(row => {
+                const course = row.cells[2].innerText.toUpperCase();
+                if (filter === "ALL" || course.includes(filter)) {
+                    row.style.display = "";
+                    count++;
+                } else {
+                    row.style.display = "none";
+                }
+            });
+            document.getElementById("studentCount").innerText = count;
+        }
+    </script>
+</body>
+</html>
