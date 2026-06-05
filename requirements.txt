@@ -1,3 +1,2 @@
 flask
-hashlib==20081119
 io
