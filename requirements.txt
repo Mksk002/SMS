@@ -1,6 +1,6 @@
 flask
 render_template
-request
+request==2.34.2
 redirect
 url_for
 session
